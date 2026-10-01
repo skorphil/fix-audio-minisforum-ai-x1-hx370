@@ -1,6 +1,6 @@
 # fix-audio-alc245-minisforum-hx370
 
-Fixes silent/broken audio and headphone jack detection on the **Minisforum AI X1 (HX370)** with the **Realtek ALC245** codec.
+Fixes silent/broken audio and headphone jack detection on the **Minisforum AI X1 (HX370)** (not PRO) with the **Realtek ALC245** codec.
 
 This repository provides a set of scripts and systemd services to apply the correct vendor-specific codec coefficients at runtime, restoring full functionality to the audio output and automatic jack detection.
 
@@ -98,7 +98,7 @@ sudo bash uninstall.sh
 ## Credits & References
 
 Derived from community research and specialized fixes for the ALC245 codec:
-- [checor/fix-audio-alc245-minisforum](https://github.com/checor/fix-audio-alc245-minisforum) (Reference solution)
+- [checor/fix-audio-alc245-minisforum](https://github.com/checor/fix-audio-alc245-minisforum) (Similar solution for Minisforum X1 *PRO*)
 - [NixOS Issue #1829](https://github.com/NixOS/nixos-hardware/issues/1829)
 - [puffo/minisforum-audio-fix](https://github.com/puffo/minisforum-audio-fix)
 
