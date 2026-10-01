@@ -4,6 +4,18 @@ Fixes silent/broken audio and headphone jack detection on the **Minisforum AI X1
 
 This repository provides a set of scripts and systemd services to apply the correct vendor-specific codec coefficients at runtime, restoring full functionality to the audio output and automatic jack detection.
 
+## Problem Statement
+
+**What is happening:**
+On Linux, the Minisforum AI X1 (HX370) suffers from completely silent audio or non-functional headphone jack detection, even when the sound card is recognized by the system. While the speakers might work in some cases, the headphone jack is often "stuck" in an unplugged state or produces no sound when connected.
+
+**The Reason:**
+The Realtek ALC245 codec used in this machine requires specific vendor-defined initialization coefficients (COEFs) to correctly route audio to the internal amplifiers and enable the jack detection sensor. Standard Linux drivers do not include these specific mappings for the Minisforum AI X1 subsystem ID (`1f4c:b022`).
+
+**Who to blame:**
+- **Minisforum:** For using a non-standard implementation without providing the necessary initialization data to the upstream Linux kernel/ALSA maintainers.
+- **Realtek:** For the opaque nature of their codec coefficients, which makes it nearly impossible for the community to fix these issues without reverse engineering or trial-and-error.
+
 ## Overview
 
 The Minisforum AI X1 (HX370) audio issue stems from missing vendor-specific codec coefficients that control internal routing and amplifiers for the headphone DAC. Applying these coefficients correctly initializes the hardware, enabling both the audio output path and the physical jack detection sensor.
