@@ -39,4 +39,16 @@ hda-verb "$DEV" 0x01 SET_GPIO_MASK      0x00 > /dev/null
 hda-verb "$DEV" 0x01 SET_GPIO_DIRECTION 0x00 > /dev/null
 hda-verb "$DEV" 0x01 SET_GPIO_DATA      0x00 > /dev/null
 
+# GPU Stability Check
+if [ -f /sys/module/snd_hda_intel/parameters/power_save ]; then
+    PS_VAL=$(cat /sys/module/snd_hda_intel/parameters/power_save)
+    if [ "$PS_VAL" != "0" ]; then
+        echo ""
+        echo "⚠️  WARNING: GPU instability detected!"
+        echo "Audio power saving is active, which can cause black screen crashes"
+        echo "when using external monitors on Kernel 7.0+."
+        echo "Run: sudo bash /usr/local/bin/fix-gpu-audio-hang.sh"
+    fi
+fi
+
 echo "Done."

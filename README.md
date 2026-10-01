@@ -2,7 +2,15 @@
 
 Fixes silent/broken audio and headphone jack detection on the **Minisforum AI X1 (HX370)** (not PRO) with the **Realtek ALC245** codec.
 
-This repository provides a set of scripts and systemd services to apply the correct vendor-specific codec coefficients at runtime, restoring full functionality to the audio output and automatic jack detection.
+## ⚠️ CRITICAL: GPU Crash Prevention
+
+If you use **Type-C or HDMI displays** with this PC, you are at high risk of **Black Screen crashes** (system remains running, but video output dies) due to a bug in Linux Kernel 7.0/AMD DCN 3.5.
+
+**This repository now includes a fix for this:**
+1. Run `sudo bash fix-gpu-audio-hang.sh` (disables audio-triggered GPU hangs)
+2. See [KNOWN_ISSUES.md](KNOWN_ISSUES.md) for critical BIOS and GRUB settings.
+
+---
 
 ## Problem Statement
 
