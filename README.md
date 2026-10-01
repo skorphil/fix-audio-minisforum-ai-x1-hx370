@@ -1,114 +1,52 @@
 # fix-audio-alc245-minisforum-hx370
 
-Fixes silent/broken audio and headphone jack detection on the **Minisforum AI X1 (HX370)** (not PRO) with the **Realtek ALC245** codec.
+Comprehensive stability and audio fix for the **Minisforum AI X1 (HX370)** (not PRO) on Linux.
 
-## ⚠️ CRITICAL: GPU Crash Prevention
+## ⚠️ MANDATORY: GPU Crash Prevention
 
-If you use **Type-C or HDMI displays** with this PC, you are at high risk of **Black Screen crashes** (system remains running, but video output dies) due to a bug in Linux Kernel 7.0/AMD DCN 3.5.
+The Minisforum AI X1 suffers from a critical bug in Linux Kernel 7.0/AMD DCN 3.5 that causes **Black Screen crashes** (PC stays on, video dies) when using external monitors or Type-C audio.
 
-**This repository now includes a fix for this:**
-1. Run `sudo bash fix-gpu-audio-hang.sh` (disables audio-triggered GPU hangs)
-2. See [KNOWN_ISSUES.md](KNOWN_ISSUES.md) for critical BIOS and GRUB settings.
-
----
-
-## Problem Statement
-
-**What is happening:**
-On Linux, the Minisforum AI X1 (HX370) suffers from completely silent audio or non-functional headphone jack detection, even when the sound card is recognized by the system. While the speakers might work in some cases, the headphone jack is often "stuck" in an unplugged state or produces no sound when connected.
-
-**The Reason:**
-The Realtek ALC245 codec used in this machine requires specific vendor-defined initialization coefficients (COEFs) to correctly route audio to the internal amplifiers and enable the jack detection sensor. Standard Linux drivers do not include these specific mappings for the Minisforum AI X1 subsystem ID (`1f4c:b022`).
-
-**Who to blame:**
-- **Minisforum:** For using a non-standard implementation without providing the necessary initialization data to the upstream Linux kernel/ALSA maintainers.
-- **Realtek:** For the opaque nature of their codec coefficients, which makes it nearly impossible for the community to fix these issues without reverse engineering or trial-and-error.
-
-## Overview
-
-The Minisforum AI X1 (HX370) audio issue stems from missing vendor-specific codec coefficients that control internal routing and amplifiers for the headphone DAC. Applying these coefficients correctly initializes the hardware, enabling both the audio output path and the physical jack detection sensor.
-
-**Result:** This fix restores **full automatic jack detection and audio switching** between speakers and headphones.
-
-### System Specifications
-- **Hardware:** Minisforum AI X1 (HX370)
-- **Processor:** AMD Ryzen AI 9 HX 370
-- **Audio Codec:** Realtek ALC245
-- **Subsystem ID:** `1f4c:b022`
-
-> **Note:** This solution was developed with AI assistance to identify and verify the correct register mappings for the ALC245 codec on this specific hardware.
-
-## How it works
-
-The core of the fix is a shell script that uses `hda-verb` to write specific coefficients to the ALC245 codec:
-1. It locates the correct card device in `/dev/snd/`.
-2. It writes the necessary processing coefficients (verbs 0x06 through 0x67).
-3. It resets the GPIO state.
-
-Two systemd services ensure the fix is applied:
-- `fix-audio-alc245.service`: Runs at boot.
-- `fix-audio-alc245-resume.service`: Runs after waking from sleep/suspend.
-
-## Installation
+This repository provides a **3-Layer Protection** plan to solve this.
 
 ### 1. Install Dependencies
 You must have `alsa-tools` installed for `hda-verb`.
 
 **Ubuntu/Debian:**
 ```bash
-sudo apt update
-sudo apt install alsa-tools
+sudo apt update && sudo apt install alsa-tools
 ```
 
-**Arch Linux:**
-```bash
-sudo pacman -S alsa-tools
-```
-
-**Fedora:**
-```bash
-sudo dnf install alsa-tools
-```
-
-### 2. Clone and Install
+### 2. Run the Integrated Installer
 ```bash
 git clone https://github.com/skorphil/fix-audio-minisforum-ai-x1-hx370.git
 cd fix-audio-minisforum-ai-x1-hx370
 sudo bash install.sh
 ```
 
-## Manual Verification
+The installer will guide you through:
+- ✅ **Layer 1:** Fixing the Realtek ALC245 audio codec (Headphone jack detection).
+- ✅ **Layer 2:** Disabling HDA power management (Prevents GPU-Audio sync hangs).
+- ✅ **Layer 3:** Applying Kernel Parameters (Disables PSR and S/G Display bugs).
 
-After installation, you can verify the fix is working:
+### 3. Manual BIOS Step (Crucial)
+After running the installer:
+1. Reboot and enter **BIOS** (Press `Del` or `F7`).
+2. Go to **Advanced > Graphics Configuration**.
+3. Set **UMA Frame Buffer Size** to **4GB** or **8GB** (Do not leave it on "Auto").
 
-1. **Check Service Status:**
-   ```bash
-   systemctl status fix-audio-alc245.service
-   ```
-2. **Automatic Detection:** Plug in your headphones. The system should automatically detect the device and switch output.
-3. **Check Jack State:**
-   ```bash
-   amixer -c2 contents | grep -A 2 "Headphone Jack"
-   ```
-   *(Note: replace `-c2` with your actual card number if different)*
-4. **Test Audio:**
-   ```bash
-   speaker-test -c 2 -t wav -l 1
-   ```
+---
+
+## Verification
+Run the included check script to ensure all OS-level mitigations are active:
+```bash
+bash check-gpu-stability.sh
+```
+
+## How it works
+The fix addresses the underlying hardware-driver desynchronization on the new Zen 5 architecture by stabilizing power states and reserving a fixed memory pool for the Radeon 890M iGPU.
 
 ## Uninstallation
-
-To remove the fix and its services:
+To remove all changes:
 ```bash
 sudo bash uninstall.sh
 ```
-
-## Credits & References
-
-Derived from community research and specialized fixes for the ALC245 codec:
-- [checor/fix-audio-alc245-minisforum](https://github.com/checor/fix-audio-alc245-minisforum) (Similar solution for Minisforum X1 *PRO*)
-- [NixOS Issue #1829](https://github.com/NixOS/nixos-hardware/issues/1829)
-- [puffo/minisforum-audio-fix](https://github.com/puffo/minisforum-audio-fix)
-
-## License
-MIT
