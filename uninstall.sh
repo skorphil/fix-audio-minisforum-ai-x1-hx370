@@ -21,7 +21,11 @@ rm -f /etc/systemd/system/fix-audio-alc245-resume.service
 # Remove scripts
 rm -f /usr/local/bin/fix-audio-alc245.sh
 rm -f /usr/local/bin/fix-gpu-audio-hang.sh
+rm -f /usr/local/bin/fix-gpu-grub-params.sh
 rm -f /usr/local/bin/check-gpu-stability.sh
+
+# Note: GRUB parameters in /etc/default/grub are NOT automatically reverted.
+# Please remove them manually if desired.
 
 # Remove persistent configs
 rm -f /etc/modprobe.d/minisforum-hx370-audio.conf

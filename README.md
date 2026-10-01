@@ -1,12 +1,12 @@
 # fix-audio-alc245-minisforum-hx370
 
-Comprehensive stability and audio fix for the **Minisforum AI X1 (HX370)** (not PRO) on Linux.
+Comprehensive stability and audio fix for the **Minisforum AI X1 (HX370)** (Standard/Non-PRO series) running **Linux Kernel 7.0 or newer**.
 
 ## ⚠️ MANDATORY: GPU Crash Prevention
 
-The Minisforum AI X1 suffers from a critical bug in Linux Kernel 7.0/AMD DCN 3.5 that causes **Black Screen crashes** (PC stays on, video dies) when using external monitors or Type-C audio.
+The Minisforum AI X1 suffers from a critical bug in **Kernel 7.0+** and the **AMD DCN 3.5** display engine that causes **Black Screen crashes** (PC remains powered on, but video output dies) when using external Type-C or HDMI monitors.
 
-This repository provides a **3-Layer Protection** plan to solve this.
+This repository provides a **3-Layer Protection** plan specifically tested on **Ubuntu/Debian** based systems to solve these hangs.
 
 ### 1. Install Dependencies
 You must have `alsa-tools` installed for `hda-verb`.
@@ -43,7 +43,7 @@ bash check-gpu-stability.sh
 ```
 
 ## How it works
-The fix addresses the underlying hardware-driver desynchronization on the new Zen 5 architecture by stabilizing power states and reserving a fixed memory pool for the Radeon 890M iGPU.
+The fix addresses the underlying hardware-driver desynchronization on the new Zen 5 architecture by stabilizing power states and reserving a fixed memory pool for the Radeon 890M iGPU. It is specifically aimed at solving stability issues present in the initial support cycle of Kernel 7.0.
 
 ## Uninstallation
 To remove all changes:

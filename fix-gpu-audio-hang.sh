@@ -27,10 +27,8 @@ if command -v update-initramfs >/dev/null; then
     echo "Updating initramfs... (this may take a moment)"
     update-initramfs -u
     echo "✓ Initramfs updated."
-elif command -v mkinitcpio >/dev/null; then
-    echo "Updating initramfs (mkinitcpio)..."
-    mkinitcpio -P
-    echo "✓ Initramfs updated."
+else
+    echo "⚠ 'update-initramfs' not found. Please update your initrd manually if necessary."
 fi
 
 echo ""

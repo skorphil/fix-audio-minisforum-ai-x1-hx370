@@ -8,7 +8,7 @@
 - Occurs primarily when using **Type-C or HDMI displays** that also handle audio.
 
 ### Root Cause
-The AMD Ryzen AI 9 HX 370 uses the new **DCN 3.5** display engine. In Linux kernels around **7.0.x**, there is a severe synchronization bug between the GPU's display core and its integrated HDMI/DP audio bridge. 
+The AMD Ryzen AI 9 HX 370 uses the new **DCN 3.5** display engine. In Linux kernels **7.0 and newer**, there is a severe synchronization bug between the GPU's display core and its integrated HDMI/DP audio bridge. 
 
 The three primary failure modes are:
 1. **DMCUB Hang:** Audio power events crash the display microcontroller.
