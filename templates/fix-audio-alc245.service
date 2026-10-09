@@ -4,7 +4,7 @@ After=sound.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/fix-audio-alc245.sh
+ExecStart=/usr/local/bin/hx370-audio-fix --apply
 RemainAfterExit=yes
 
 [Install]

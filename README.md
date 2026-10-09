@@ -1,52 +1,71 @@
-# fix-audio-alc245-minisforum-hx370
+# Minisforum AI X1 (HX370) Audio Jack Fix for Linux
 
-Comprehensive stability and audio fix for the **Minisforum AI X1 (HX370)** (Standard/Non-PRO series) running **Linux Kernel 7.0 or newer**.
+This repository addresses the headphone jack detection issue on the **Minisforum AI X1** (AMD Ryzen AI 9 HX 370) running Linux.
 
-## ⚠️ MANDATORY: GPU Crash Prevention
+> [!IMPORTANT]
+> This fix is tailored exclusively for the **Minisforum AI X1** (non-Pro) and avoids firmware modifications.
 
-The Minisforum AI X1 suffers from a critical bug in **Kernel 7.0+** and the **AMD DCN 3.5** display engine that causes **Black Screen crashes** (PC remains powered on, but video output dies) when using external Type-C or HDMI monitors.
-
-This repository provides a **3-Layer Protection** plan specifically tested on **Ubuntu/Debian** based systems to solve these hangs.
-
-### 1. Install Dependencies
-You must have `alsa-tools` installed for `hda-verb`.
-
-**Ubuntu/Debian:**
-```bash
-sudo apt update && sudo apt install alsa-tools
-```
-
-### 2. Run the Integrated Installer
-```bash
-git clone https://github.com/skorphil/fix-audio-minisforum-ai-x1-hx370.git
-cd fix-audio-minisforum-ai-x1-hx370
-sudo bash install.sh
-```
-
-The installer will guide you through:
-- ✅ **Layer 1:** Fixing the Realtek ALC245 audio codec (Headphone jack detection).
-- ✅ **Layer 2:** Disabling HDA power management (Prevents GPU-Audio sync hangs).
-- ✅ **Layer 3:** Applying Kernel Parameters (Disables PSR and S/G Display bugs).
-
-### 3. Manual BIOS Step (Crucial)
-After running the installer:
-1. Reboot and enter **BIOS** (Press `Del` or `F7`).
-2. Go to **Advanced > Graphics Configuration**.
-3. Set **UMA Frame Buffer Size** to **4GB** or **8GB** (Do not leave it on "Auto").
+For other models and approaches, see:
+- [fix-audio-alc245-minisforum](https://github.com/checor/fix-audio-alc245-minisforum) (for X1 Pro)
+- [minisforum-audio-fix](https://github.com/puffo/minisforum-audio-fix) (firmware patch)
 
 ---
 
-## Verification
-Run the included check script to ensure all OS-level mitigations are active:
+## 🚀 Quick Install (One-Liner)
+
+Run the following command to launch the interactive manager directly:
+
 ```bash
-bash check-gpu-stability.sh
+/bin/bash -c "$(curl -fsSL https://github.com/skorphil/fix-audio-minisforum-ai-x1-hx370/releases/latest/download/hx370-audio-fix.sh)"
 ```
 
-## How it works
-The fix addresses the underlying hardware-driver desynchronization on the new Zen 5 architecture by stabilizing power states and reserving a fixed memory pool for the Radeon 890M iGPU. It is specifically aimed at solving stability issues present in the initial support cycle of Kernel 7.0.
+---
 
-## Uninstallation
-To remove all changes:
+## 🛠 Usage Instructions
+
+### 1. Simple Run (Standalone)
+If you have cloned the repository, you can build and run the script:
 ```bash
-sudo bash uninstall.sh
+make install
 ```
+
+### 2. Command Line Arguments
+For automation or power users:
+- `sudo ./hx370-audio-fix.sh --install`: Silent install.
+- `sudo ./hx370-audio-fix.sh --uninstall`: Remove all changes.
+- `sudo ./hx370-audio-fix.sh --apply`: Apply codec coefficients immediately (without installing).
+- `sudo ./hx370-audio-fix.sh --status`: Check installation status.
+
+---
+
+## 🏗 Developer Information
+This repository uses a modular structure for easier maintenance.
+- `src/`: Contains modular shell scripts.
+- `templates/`: Contains systemd service templates.
+- `build.sh`: A script that bundles everything into the standalone `hx370-audio-fix.sh`.
+
+If you modify files in `src/` or `templates/`, make sure to run `bash build.sh` to update the main script.
+
+---
+
+## 📚 Research & References
+- **NixOS Issue #1829:** [Minisforum AI X1 Headphones unplugged](https://github.com/NixOS/nixos-hardware/issues/1829)
+- **Linux Mint Forums:** [Minisforum X1 Pro Audio Fix](https://forums.linuxmint.com/viewtopic.php?t=449602)
+
+## 💻 Tested Environments
+
+### Fedora 44
+- **Hardware:** Minisforum AI X1 (AMD Ryzen AI 9 HX 370)
+- **OS:** Fedora 44 (Workstation Edition)
+- **Kernel:** `7.2.9-200.fc44.x86_64`
+- **Codec:** Realtek ALC245
+
+### Ubuntu 26.04 LTS
+- **Hardware:** Minisforum AI X1 (AMD Ryzen AI 9 HX 370)
+- **OS:** Ubuntu 26.04.1 LTS (Resolute Raccoon)
+- **Kernel:** `7.0.0-14-generic`
+- **Codec:** Realtek ALC245
+
+---
+
+This project was developed with AI assistance.
